@@ -1,13 +1,26 @@
 import http, { IncomingMessage, Server, ServerResponse } from "http";
-/*
-implement your server code here
-*/
 
-const server: Server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
-    if (req.method === "GET") {
-      res.end(JSON.stringify({ name: "hello" }));
-    }
+import { getTasks, addTasks } from "./engine";
+
+const server: Server = http.createServer((req: IncomingMessage, res: ServerResponse)=>{
+  if(req.method == "GET" && req.url == "/api/get"){
+    return getTasks(req, res);
   }
-);
+  if(req.method == "POST" && req.url == "/api/post"){
+    return addTasks(req, res);
+  }
+  // if(req.method == "PUT" && req.url == "/api/put"){
+  //   return updateTask(req, res);
+  // }
+  // if(req.method == "DELETE" && req.url == "/api/del"){
+  //   return deleteTask(req, res);
+  // }
+  res.writeHead(404, { "Content-Type": "application/json"});
+  res.end(JSON.stringify({message: "Route no dey"}))
 
-server.listen(3005);
+
+  
+})
+
+const PORT = process.env.PORT || 8000;
+server.listen(PORT, () => console.log(`my server is running on port ${PORT}`))
